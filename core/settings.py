@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(p!je(vm@lap)5)2(ds9t!@*#k&z2ej-s9kyhct#$d36p0ecjd'
-
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG') == 'True'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -126,14 +128,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+AUTH_USER_MODEL = 'banda_usuarios.Usuario'
 # Rutas para archivos subidos por el usuario (PDFs, Videos)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_USER_MODEL = 'banda_usuarios.Usuario'
-
-LOGIN_REDIRECT_URL = 'banda_usuarios:dashboard_profesor'
+# CORRECCIÓN VITAL: Ambos van al 'home', y el 'home' decide qué dashboard mostrar
+LOGIN_REDIRECT_URL = 'banda_usuarios:home' 
 LOGIN_URL = 'banda_usuarios:login'
 LOGOUT_REDIRECT_URL = 'banda_usuarios:login'
-
 
