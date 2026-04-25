@@ -40,9 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'banda.usuarios.apps.UsuariosConfig',
-    'banda.academia.apps.AcademiaConfig',
+    'banda.usuarios',
+    'banda.academia',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

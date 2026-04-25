@@ -1,137 +1,117 @@
-{% extends 'base.html' %}
+{% extends 'usuarios/base.html' %}
 
 {% block content %}
 <div class="container mt-4">
-    
-    {% if user.rol == 'estudiante' and not user.perfil_completo %}
-    <div class="alert alert-warning border-warning shadow-sm mb-4" role="alert">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-exclamation-triangle-fill fs-2 me-3"></i>
-            <div>
-                <h5 class="alert-heading mb-1">¡Atención, músico!</h5>
-                <p class="mb-2">Tu perfil está incompleto. Para una mejor gestión académica, por favor actualiza tu semestre, carrera y rango militar.</p>
-                <a href="{% url 'banda_usuarios:completar_perfil' %}" class="btn btn-warning btn-sm fw-bold">
-                    <i class="bi bi-pencil-square me-1"></i>Completar mis datos ahora
-                </a>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0 text-dark">Panel de Instrucción - "Bandwar"</h2>
+            <p class="text-muted">Gestión de la Banda de Guerra UNEFA | Sede Coro</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-dark p-2 px-3">
+                <i class="bi bi-shield-check me-2 text-warning"></i>Rol: Instructor
+            </span>
         </div>
     </div>
-    {% endif %}
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12 text-center text-md-start">
-            <h2 style="color: var(--primary-color); font-weight: 700;">Panel de Control - "Bandwar"</h2>
-            <p class="text-muted">Bienvenido, <strong>{{ user.username }}</strong>. Aquí está el resumen de la banda hoy.</p>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <a href="{% url 'banda_usuarios:lista_estudiantes' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm bg-primary text-white h-100 transition-hover">
+                    <div class="card-body text-center py-4">
+                        <i class="bi bi-people-fill display-4 mb-2"></i>
+                        <h2 class="fw-bold mb-0">{{ total_estudiantes }}</h2>
+                        <p class="card-text opacity-75">Estudiantes bajo tu mando</p>
+                        <div class="mt-2 small"><i class="bi bi-eye"></i> Ver lista completa</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-info text-white h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-music-note-beamed display-4 mb-2"></i>
+                    <h2 class="fw-bold mb-0">{{ conteo_material|default:"0" }}</h2>
+                    <p class="card-text opacity-75">Materiales en Biblioteca</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-dark text-white h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-hdd-network display-4 mb-2 text-warning"></i>
+                    <h2 class="fw-bold mb-0 text-warning">Activo</h2>
+                    <p class="card-text opacity-75">Sincronización con "Bandwar"</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm border-0 bg-primary text-white h-100">
-                <div class="card-body text-center d-flex flex-column justify-content-center py-4">
-                    <h1 class="display-4 fw-bold">{{ total_materiales }}</h1>
-                    <p class="mb-0 opacity-75">Archivos en Biblioteca</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm border-0 bg-success text-white h-100">
-                <div class="card-body text-center d-flex flex-column justify-content-center py-4">
-                    <h1 class="display-4 fw-bold">{{ total_estudiantes }}</h1>
-                    <p class="mb-0 opacity-75">Estudiantes Registrados</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm border-0 bg-dark text-white h-100">
-                <div class="card-body text-center d-flex flex-column justify-content-center py-4">
-                    {% if user.rol == 'profesor' %}
-                        <h2 class="fw-bold">Instructor</h2>
-                        <p class="mb-0 opacity-75">Sede Coro, Falcón</p>
-                    {% else %}
-                        <h1 class="display-4 fw-bold">7mo</h1>
-                        <p class="mb-0 opacity-75">Semestre UNEFA</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-<div class="col-md-3">
-    <a href="{% url 'banda_usuarios:lista_estudiantes' %}" class="text-decoration-none">
-        <div class="card bg-info text-white shadow-sm h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title mb-0">Total Estudiantes</h6>
-                        <h2 class="mb-0">{{ total_estudiantes }}</h2>
-                    </div>
-                    <i class="bi bi-people fs-1 opacity-50"></i>
-                </div>
-                <small class="mt-2 d-block">Ver mi lista <i class="bi bi-arrow-right"></i></small>
-            </div>
-        </div>
-    </a>
-</div>
-
-    <div class="row mt-2">
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-dark fw-bold">Últimos Materiales Subidos</h5>
-                    <i class="bi bi-clock-history text-muted"></i>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        {% for mat in ultimos_materiales %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                            <div>
-                                <span class="fw-bold text-dark">{{ mat.titulo }}</span><br>
-                                <small class="text-muted"><i class="bi bi-calendar3"></i> {{ mat.fecha_subida|date:"d M, Y" }}</small>
-                            </div>
-                            <span class="badge bg-secondary rounded-pill">{{ mat.get_tipo_display }}</span>
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item text-center py-5">
-                            <i class="bi bi-folder2-open display-6 text-muted"></i>
-                            <p class="mt-2 text-muted">No hay materiales cargados aún.</p>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="card-footer bg-white border-0 py-3">
-                    <a href="{% url 'banda_academia:lista_multimedia' %}" class="btn btn-sm btn-outline-primary w-100 w-md-auto">Ver toda la biblioteca</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0 text-dark fw-bold">Acciones Rápidas</h5>
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-gear-wide-connected me-2"></i>Acciones Administrativas</h5>
                 </div>
                 <div class="card-body">
-                    {% if user.rol == 'profesor' %}
-                    <a href="{% url 'banda_academia:subir_material' %}" class="btn btn-primary w-100 mb-3 py-2 shadow-sm">
-                        <i class="bi bi-cloud-arrow-up-fill me-2"></i>Subir Nuevo Material
-                    </a>
-                    <a href="{% url 'banda_usuarios:registrar_estudiante' %}" class="btn btn-outline-success w-100 py-2">
-                        <i class="bi bi-person-plus-fill me-2"></i>Registrar Estudiante
-                    </a>
-                    {% else %}
-                    <a href="{% url 'banda_academia:lista_multimedia' %}" class="btn btn-primary w-100 py-3 shadow-sm">
-                        <i class="bi bi-journal-bookmark-fill me-2"></i>Ir a Estudiar
-                    </a>
-                    {% endif %}
-                    
-                    <hr class="my-4">
-                    <div class="text-center">
-                        <small class="text-muted italic">Universidad Nacional Experimental Politécnica de la Fuerza Armada Nacional Bolivariana</small>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <a href="{% url 'banda_usuarios:registrar_estudiante' %}" class="btn btn-outline-primary w-100 py-3">
+                                <i class="bi bi-person-plus-fill fs-3 d-block mb-2"></i>
+                                Registrar Nuevo Alumno
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="#" class="btn btn-outline-success w-100 py-3">
+                                <i class="bi bi-cloud-arrow-up-fill fs-3 d-block mb-2"></i>
+                                Subir Partituras/Videos
+                            </a>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold">Material Reciente</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    {% for material in ultimos_materiales %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-file-earmark-play me-2"></i>{{ material.titulo }}</span>
+                            <span class="badge bg-light text-dark small">{{ material.fecha_subida|date:"d/m/Y" }}</span>
+                        </div>
+                    {% empty %}
+                        <div class="list-group-item text-center py-4 text-muted">
+                            Aún no has subido materiales a la academia.
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge display-1 text-primary"></i>
+                    <h5 class="fw-bold mt-3">{{ user.first_name }} {{ user.last_name }}</h5>
+                    <p class="text-muted small">{{ user.rango_militar|default:"Instructor Militar" }}</p>
+                    <a href="{% url 'banda_usuarios:completar_perfil' %}" class="btn btn-light btn-sm w-100">
+                        <i class="bi bi-pencil"></i> Editar Perfil
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        filter: brightness(110%);
+    }
+</style>
 {% endblock %}

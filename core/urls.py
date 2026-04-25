@@ -22,8 +22,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Asegúrate de que el nombre de la carpeta de la app sea 'usuarios'
-    path('usuarios/', include('usuarios.urls')), 
-    path('academia/', include('banda.academia.urls')), # Asumiendo que esta está bien
+    path('usuarios/', include('banda.usuarios.urls')), 
+    
+    path('academia/', include('banda.academia.urls')),
 ]
 
 # Configuración para que se vean las imágenes de perfil en desarrollo
