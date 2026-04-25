@@ -13,7 +13,20 @@ class Usuario(AbstractUser):
 
     rol = models.CharField(max_length=20, choices=TIPOS_USUARIO, default=ES_ESTUDIANTE)
     
-    # Este campo permite que sepamos qué profesor inscribió a qué estudiante
+    # --- Nuevos campos académicos y militares ---
+    cedula = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    carrera = models.CharField(max_length=100, null=True, blank=True)
+    semestre = models.IntegerField(null=True, blank=True)
+    rango_militar = models.CharField(max_length=50, null=True, blank=True)
+    
+    # Campo para biografía y foto (útil para el perfil del encargado)
+    biografia = models.TextField(null=True, blank=True)
+    foto_perfil = models.ImageField(upload_to='perfiles/', null=True, blank=True)
+    
+    # Control de flujo: ¿Ya el estudiante llenó sus datos obligatorios?
+    perfil_completo = models.BooleanField(default=False)
+    
+    # Relación jerárquica
     creado_por = models.ForeignKey(
         'self', 
         on_delete=models.SET_NULL, 
@@ -23,4 +36,4 @@ class Usuario(AbstractUser):
     )
 
     def __str__(self):
-        return f"{self.username} ({self.rol})"
+        return f"{self.first_name} {self.last_name} - {self.username} ({self.rol})"

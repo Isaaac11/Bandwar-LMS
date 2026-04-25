@@ -2,30 +2,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    ...
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandwar - UNEFA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4 shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'banda_usuarios:home' %}">BANDWAR</a>
-            <div class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                    <span class="nav-link text-light">Hola, {{ user.username }}</span>
-                    <a class="btn btn-sm btn-outline-danger ms-2" href="{% url 'banda_usuarios:logout' %}">Cerrar Sesión</a>
+            <a class="navbar-brand fw-bold" href="{% url 'banda_usuarios:home' %}">
+                <i class="bi bi-music-note-beamed me-2"></i>BANDWAR
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto align-items-center">
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'banda_usuarios:home' %}">Inicio</a>
+                        <a class="nav-link" href="{% url 'banda_academia:lista_multimedia' %}">Biblioteca</a>
+                        
+                        <div class="nav-item dropdown ms-lg-3">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'banda_usuarios:completar_perfil' %}">
+                                        <i class="bi bi-pencil-square me-2"></i>Mi Perfil
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'banda_usuarios:logout' %}" method="post" class="px-3">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger w-100 text-start">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Salir
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     {% else %}
-                    <a class="nav-link" href="{% url 'banda_usuarios:login' %}">Iniciar Sesión</a>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'banda_usuarios:dashboard_profesor' %}">Panel de Control</a>
-                    </li>
-                {% endif %}
+                        <a class="nav-link" href="{% url 'banda_usuarios:login' %}">Iniciar Sesión</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
 
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>{% endif %}
+                    {% if message.tags == 'error' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="container mb-5">
         {% block content %}
         {% endblock %}
     </div>

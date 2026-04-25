@@ -1,24 +1,24 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Usuario
 from banda.academia.models import MaterialMultimedia
-from django.contrib.auth import get_user_model
+
+# ESTA LÍNEA ES LA QUE FALTA PARA QUE 'User' FUNCIONE ABAJO
+User = get_user_model()
+
 def login_view(request):
-    # Si el usuario ya está logueado, lo mandamos directo al home
     if request.user.is_authenticated:
         return redirect('banda_usuarios:home')
 
     if request.method == 'POST':
         usuario_nom = request.POST.get('username')
         clave = request.POST.get('password')
-        
         user = authenticate(request, username=usuario_nom, password=clave)
         
         if user is not None:
             login(request, user)
-            # Redirigimos a nuestra vista home personalizada, no al admin
             return redirect('banda_usuarios:home') 
         else:
             messages.error(request, "Usuario o contraseña incorrectos.")
@@ -32,58 +32,102 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    # Consultas a la base de datos
     ultimos_materiales = MaterialMultimedia.objects.all().order_by('-fecha_subida')[:5]
     total_materiales = MaterialMultimedia.objects.count()
+    # Aquí usamos 'Usuario' porque ya lo importaste arriba desde .models
     total_estudiantes = Usuario.objects.filter(rol='estudiante').count()
 
-    # Preparamos el contexto con los nombres exactos que usa tu HTML
     context = {
         'ultimos_materiales': ultimos_materiales,
         'total_materiales': total_materiales,
         'total_estudiantes': total_estudiantes,
+        'perfil_incompleto': not request.user.perfil_completo if request.user.rol == 'estudiante' else False
     }
 
-    # Si es profesor, podrías agregar lógica extra aquí si fuera necesario
     if request.user.rol == 'profesor':
         context['mis_alumnos'] = Usuario.objects.filter(creado_por=request.user)
 
     return render(request, 'usuarios/home.html', context)
 
+@login_required
 def registrar_estudiante(request):
-    if request.method == 'POST':
-        # Capturamos los datos del formulario manual
-        nom_usuario = request.POST.get('username')
-        clave = request.POST.get('password')
-        nombre = request.POST.get('first_name')
-        apellido = request.POST.get('last_name')
-        
-        # Creamos el usuario con el rol de estudiante
-        nuevo_alumno = Usuario.objects.create_user(
-            username=nom_usuario,
-            password=clave,
-            first_name=nombre,
-            last_name=apellido,
-            rol=Usuario.ES_ESTUDIANTE,
-            creado_por=request.user # Aquí queda vinculado al profesor actual
-        )
-        messages.success(request, f"Estudiante {nom_usuario} registrado con éxito.")
+    if request.user.rol != 'profesor':
         return redirect('banda_usuarios:home')
-        
+
+    if request.method == 'POST':
+        cedula = request.POST.get('cedula')
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+
+        # Ahora 'User' ya funcionará gracias a la línea que agregamos arriba
+        if User.objects.filter(username=cedula).exists():
+            messages.error(request, "Esta cédula ya está registrada.")
+        else:
+            User.objects.create_user(
+                username=cedula,
+                first_name=nombre,
+                last_name=apellido,
+                password=cedula, 
+                rol='estudiante',
+                creado_por=request.user 
+            )
+            messages.success(request, f"Estudiante {nombre} registrado con éxito.")
+            return redirect('banda_usuarios:home')
+
     return render(request, 'usuarios/registrar_estudiante.html')
 
+# Nota: dashboard_profesor parece sobrar si ya usas 'home' para todo, 
+# pero la mantengo como pediste.
 @login_required
 def dashboard_profesor(request):
-    # Verificamos que sea profesor
     if request.user.rol != 'profesor':
-        return redirect('banda_usuarios:dashboard_estudiante')
+        return redirect('banda_usuarios:home')
 
-    # Obtenemos estadísticas simples para las tarjetas del dashboard
-    conteo_material = MaterialMultimedia.objects.filter(profesor=request.user).count()
-    ultimos_materiales = MaterialMultimedia.objects.filter(profesor=request.user).order_by('-fecha_subida')[:5]
+    conteo_material = MaterialMultimedia.objects.count()
+    ultimos_materiales = MaterialMultimedia.objects.all().order_by('-fecha_subida')[:5]
 
     context = {
         'conteo_material': conteo_material,
         'ultimos_materiales': ultimos_materiales,
     }
     return render(request, 'usuarios/dashboard_profesor.html', context)
+
+@login_required
+def completar_perfil(request):
+    user = request.user
+    if request.method == 'POST':
+        # Cambio de nombre y apellido (Para ambos)
+        user.first_name = request.POST.get('nombre')
+        user.last_name = request.POST.get('apellido')
+        
+        # Solo el estudiante actualiza esto
+        if user.rol == 'estudiante':
+            user.semestre = request.POST.get('semestre')
+            user.carrera = request.POST.get('carrera')
+            
+        # Rango Militar (Ambos pueden, pero con su lógica)
+        user.rango_militar = request.POST.get('rango_militar')
+        
+        # Cambio de contraseña (Opcional)
+        password = request.POST.get('password')
+        if password and password.strip():
+            user.set_password(password)
+            update_session_auth_hash(request, user) # Evita que se cierre la sesión
+            
+        user.perfil_completo = True
+        user.save()
+        
+        messages.success(request, "¡Perfil actualizado con éxito!")
+        return redirect('banda_usuarios:home')
+        
+    return render(request, 'usuarios/completar_perfil.html')
+
+@login_required
+def lista_estudiantes(request):
+    # Solo el profesor puede ver esto
+    if request.user.rol != 'profesor':
+        return redirect('banda_usuarios:home')
+    
+    # Obtenemos los alumnos creados por este profesor
+    mis_alumnos = request.user.alumnos.all()
+    return render(request, 'usuarios/lista_estudiantes.html', {'alumnos': mis_alumnos})

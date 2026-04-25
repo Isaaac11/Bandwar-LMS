@@ -21,8 +21,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('banda.usuarios.urls')), 
-    path('academia/', include('banda.academia.urls')), # La biblioteca y clases
+    path('usuarios/', include('banda.usuarios.urls')), 
+    path('academia/', include('banda.academia.urls')),
+
 ]
 
 

@@ -12,10 +12,10 @@ User = get_user_model()
 
 @login_required
 def home(request):
-    # Contamos los datos de la base de datos de PostgreSQL
+    # Asegúrate de usar estos nombres de variables exactos
     total_materiales = MaterialMultimedia.objects.count()
     total_estudiantes = User.objects.filter(rol='estudiante').count()
-    ultimos_materiales = MaterialMultimedia.objects.all().order_by('-fecha_subida')[:3]
+    ultimos_materiales = MaterialMultimedia.objects.all().order_by('-fecha_subida')[:5]
 
     context = {
         'total_materiales': total_materiales,
@@ -23,7 +23,6 @@ def home(request):
         'ultimos_materiales': ultimos_materiales,
     }
     return render(request, 'usuarios/home.html', context)
-
 @login_required
 def lista_multimedia(request):
     materiales = MaterialMultimedia.objects.all().order_by('-fecha_subida')

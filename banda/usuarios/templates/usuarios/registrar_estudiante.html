@@ -2,35 +2,65 @@
 
 {% block content %}
 <div class="row justify-content-center mt-4">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-dark text-warning">
-                <h4 class="mb-0">Registrar Nuevo Alumno de la Banda</h4>
+    <div class="col-md-7">
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-warning py-3">
+                <h4 class="mb-0 text-center"><i class="bi bi-person-plus-fill me-2"></i>Inscribir Nuevo Músico</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="POST">
                     {% csrf_token %}
+                    
+                    <h6 class="text-primary border-bottom pb-2 mb-3">Datos Básicos (Obligatorios)</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label>Nombre</label>
-                            <input type="text" name="first_name" class="form-control" required>
+                            <label class="form-label fw-bold small">Nombre</label>
+                            <input type="text" name="nombre" class="form-control" placeholder="Ej: Isaac" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label>Apellido</label>
-                            <input type="text" name="last_name" class="form-control" required>
+                            <label class="form-label fw-bold small">Apellido</label>
+                            <input type="text" name="apellido" class="form-control" placeholder="Ej: Falcón" required>
                         </div>
                     </div>
+
                     <div class="mb-3">
-                        <label>Nombre de Usuario (Cédula o ID)</label>
-                        <input type="text" name="username" class="form-control" required>
+                        <label class="form-label fw-bold small">Cédula de Identidad</label>
+                        <div class="input-group">
+                            <span class="input-group-text">V-</span>
+                            <input type="text" name="cedula" class="form-control" placeholder="28123456" required>
+                        </div>
+                        <div id="emailHelp" class="form-text">Se usará como usuario y clave inicial.</div>
                     </div>
-                    <div class="mb-3">
-                        <label>Contraseña Temporal</label>
-                        <input type="password" name="password" class="form-control" required>
+
+                    <h6 class="text-secondary border-bottom pb-2 mb-3 mt-4">Datos Académicos (Opcionales para el profesor)</h6>
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label small">Carrera en UNEFA</label>
+                            <input type="text" name="carrera" class="form-control" placeholder="Ingeniería de Sistemas">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label small">Semestre</label>
+                            <input type="number" name="semestre" class="form-control" placeholder="7">
+                        </div>
                     </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small">Rango Militar en la Banda</label>
+                        <select name="rango_militar" class="form-select">
+                            <option value="">Seleccione rango (si aplica)</option>
+                            <option value="Miliciano">Miliciano</option>
+                            <option value="Distinguido">Distinguido</option>
+                            <option value="Cabo Segundo">Cabo Segundo</option>
+                            <option value="Cabo Primero">Cabo Primero</option>
+                            <option value="Sargento">Sargento</option>
+                        </select>
+                    </div>
+
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Crear Estudiante</button>
-                        <a href="{% url 'usuarios:home' %}" class="btn btn-light">Cancelar</a>
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                            <i class="bi bi-save me-2"></i>Registrar Estudiante
+                        </button>
+                        <a href="{% url 'banda_usuarios:home' %}" class="btn btn-light border">Cancelar</a>
                     </div>
                 </form>
             </div>
