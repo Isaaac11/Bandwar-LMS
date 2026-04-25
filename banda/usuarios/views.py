@@ -53,29 +53,29 @@ def home(request):
 def registrar_estudiante(request):
     if request.user.rol != 'profesor':
         return redirect('banda_usuarios:home')
-
+    
     if request.method == 'POST':
         cedula = request.POST.get('cedula')
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
+        password = request.POST.get('password')
 
-        # Ahora 'User' ya funcionará gracias a la línea que agregamos arriba
         if User.objects.filter(username=cedula).exists():
             messages.error(request, "Esta cédula ya está registrada.")
         else:
-            User.objects.create_user(
+            # Creamos el estudiante y lo vinculamos al profesor actual
+            nuevo_estudiante = User.objects.create_user(
                 username=cedula,
                 first_name=nombre,
                 last_name=apellido,
-                password=cedula, 
+                password=password,
                 rol='estudiante',
-                creado_por=request.user 
+                profesor_asignado=request.user # Clave para que aparezca en SU lista
             )
             messages.success(request, f"Estudiante {nombre} registrado con éxito.")
-            return redirect('banda_usuarios:home')
+            return redirect('banda_usuarios:lista_estudiantes')
 
     return render(request, 'usuarios/registrar_estudiante.html')
-
 # Nota: dashboard_profesor parece sobrar si ya usas 'home' para todo, 
 # pero la mantengo como pediste.
 @login_required
