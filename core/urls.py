@@ -21,6 +21,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('usuarios/', include('banda.usuarios.urls')),
-    path('lms/', include('banda.academia.urls')),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', include('banda.usuarios.urls')), 
+    path('academia/', include('banda.academia.urls')), # La biblioteca y clases
+]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
