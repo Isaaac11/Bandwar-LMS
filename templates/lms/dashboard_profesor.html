@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Bienvenido, Instructor {{ user.first_name }}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white shadow">
+                <div class="card-body text-center">
+                    <i class="bi bi-collection-play mb-3" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                    <h5 class="card-title">Biblioteca Multimedia</h5>
+                    <p class="card-text small">Tienes {{ conteo_material }} recursos publicados.</p>
+                    <a href="{% url 'banda_academia:lista_multimedia' %}" class="btn btn-outline-warning w-100">Ver Todo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0" style="background-color: var(--primary-color);">
+                <div class="card-body text-center text-white">
+                    <i class="bi bi-cloud-arrow-up mb-3" style="font-size: 2rem;"></i>
+                    <h5 class="card-title">Cargar Material</h5>
+                    <p class="card-text small">Sube partituras, videos o enlaces nuevos.</p>
+                    <a href="{% url 'banda_academia:subir_material' %}" class="btn btn-light w-100">Subir Ahora</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-people mb-3" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <h5 class="card-title">Mis Estudiantes</h5>
+                    <p class="card-text small text-muted">Pronto: Control de asistencia y progreso.</p>
+                    <button class="btn btn-secondary w-100" disabled>En Desarrollo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white fw-bold">Últimos archivos subidos</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Tipo</th>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in ultimos_materiales %}
+                            <tr>
+                                <td>{{ item.titulo }}</td>
+                                <td>{{ item.get_tipo_display }}</td>
+                                <td>{{ item.fecha_subida|date:"d M, Y" }}</td>
+                                <td><a href="{% url 'banda_academia:lista_multimedia' %}" class="btn btn-sm btn-outline-primary">Ver</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Aún no has subido material.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

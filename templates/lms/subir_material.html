@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-warning text-center py-3">
+                <h4 class="mb-0">Cargar Nuevo Material Multimedia</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Título del Material</label>
+                        {{ form.titulo }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tipo de Contenido</label>
+                        {{ form.tipo }}
+                    </div>
+
+                    <div id="campo_archivo" class="mb-3">
+                        <label class="form-label fw-bold">Seleccionar Archivo (PDF o MP4)</label>
+                        {{ form.archivo }}
+                        <div class="form-text">Usa este campo si el archivo está en tu computadora.</div>
+                    </div>
+
+                    <div id="campo_link" class="mb-3">
+                        <label class="form-label fw-bold">Enlace Externo (YouTube / Drive)</label>
+                        {{ form.link_externo }}
+                        <div class="form-text">Usa este campo si el material es un link.</div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Guardar en Biblioteca</button>
+                        <a href="{% url 'banda_usuarios:home' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar y Volver
+                        </a>
+                        <a href="{% url 'banda_academia:lista_multimedia' %}" class="btn btn-outline-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const tipoSelect = document.querySelector('select[name="tipo"]');
+    const campoArchivo = document.getElementById('campo_archivo');
+    const campoLink = document.getElementById('campo_link');
+
+    tipoSelect.addEventListener('change', function() {
+        if (this.value === 'link') {
+            campoArchivo.style.display = 'none';
+            campoLink.style.display = 'block';
+        } else {
+            campoArchivo.style.display = 'block';
+            campoLink.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

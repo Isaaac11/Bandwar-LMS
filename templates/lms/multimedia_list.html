@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{% url 'banda_usuarios:home' %}" class="btn btn-sm btn-outline-dark mb-2">
+            <i class="bi bi-house-door"></i> Volver al Inicio
+        </a>
+        <h2 style="color: var(--primary-color);">Biblioteca Multimedia</h2>
+        {% if user.rol == 'profesor' %}
+            <a href="{% url 'banda_academia:subir_material' %}" class="btn btn-primary shadow-sm">+ Subir Material</a>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% for item in materiales %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm h-100 border-0" style="border-top: 4px solid var(--secondary-color) !important;">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title text-dark mb-0">{{ item.titulo }}</h5>
+                        
+                        {% if user.rol == 'profesor' %}
+                        <form action="{% url 'banda_academia:eliminar_material' item.id %}" method="POST" onsubmit="return confirm('¿Eliminar este archivo?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger border-0">
+                                <i class="bi bi-trash-fill"></i> Borrar
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                    <span class="badge bg-dark text-warning mb-3" style="width: fit-content;">{{ item.get_tipo_display }}</span>
+                    
+                    <div class="mt-auto">
+                        {% if item.tipo == 'video' and item.archivo %}
+                            <video width="100%" controls class="rounded mb-2">
+                                <source src="{{ item.archivo.url }}" type="video/mp4">
+                                Tu navegador no soporta el video.
+                            </video>
+                        {% elif item.tipo == 'pdf' and item.archivo %}
+                            <p class="small text-muted">Documento disponible para lectura.</p>
+                            <a href="{{ item.archivo.url }}" target="_blank" class="btn btn-outline-dark w-100">Abrir PDF</a>
+                        {% elif item.tipo == 'link' %}
+                            <p class="small text-muted text-truncate">{{ item.link_externo }}</p>
+                            <a href="{{ item.link_externo }}" target="_blank" class="btn btn-outline-primary w-100">Ir al Enlace</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-muted small">
+                    Subido: {{ item.fecha_subida|date:"d/m/Y" }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No hay archivos multimedia cargados aún.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
