@@ -34,10 +34,16 @@
                                 <span class="badge bg-secondary">Cerrado</span>
                                 {% endif %}
                             </td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="#" class="btn btn-outline-info btn-sm">Editar</a>
-                                    <a href="#" class="btn btn-outline-danger btn-sm">Eliminar</a>
+                            <td lass="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'banda_academia:editar_examen' examen.id %}" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </a>
+                                    <a href="{% url 'banda_academia:eliminar_examen' examen.id %}" 
+                                    class="btn btn-sm btn-outline-danger" 
+                                    onclick="return confirm('¿Estás seguro de eliminar esta evaluación?')">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </a>
                                 </div>
                             </td>
                         </tr>

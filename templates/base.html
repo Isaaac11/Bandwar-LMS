@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bandwar - UNEFA</title>
+    <title>{% block title %}Bandwar - UNEFA{% endblock %}</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4 shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'banda_usuarios:home' %}">
                 <i class="bi bi-music-note-beamed me-2"></i>BANDWAR
@@ -26,6 +27,12 @@
                     {% if user.is_authenticated %}
                         <a class="nav-link" href="{% url 'banda_usuarios:home' %}">Inicio</a>
                         <a class="nav-link" href="{% url 'banda_academia:lista_multimedia' %}">Biblioteca</a>
+                        
+                        {% if user.rol == 'profesor' %}
+                        <a class="nav-link text-warning" href="{% url 'banda_academia:lista_examenes' %}">
+                            <i class="bi bi-journal-check"></i> Evaluaciones
+                        </a>
+                        {% endif %}
                         
                         <div class="nav-item dropdown ms-lg-3">
                             <a class="nav-link dropdown-toggle text-light" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -59,9 +66,9 @@
     <div class="container">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
                     {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>{% endif %}
-                    {% if message.tags == 'error' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
+                    {% if message.tags == 'error' or message.tags == 'danger' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -69,10 +76,18 @@
         {% endif %}
     </div>
 
-    <div class="container mb-5">
+    <main class="container mb-5 flex-grow-1">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <small>
+                &copy; 2026 Bandwar LMS. Desarrollado para la banda de la UNEFA.
+            </small>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

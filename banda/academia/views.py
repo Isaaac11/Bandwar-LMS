@@ -60,12 +60,11 @@ def eliminar_material(request, material_id):
     return redirect('banda_academia:lista_multimedia')
 
 @login_required
-def lista_examenes(request): # <-- Quítale el "_profesor" para que coincida con el urls.py
+def lista_examenes(request):
     if request.user.rol != 'profesor':
         return redirect('banda_usuarios:home')
-    
-    # Ojo aquí: tenías "eexamenes" con doble 'e', corrígelo a "examenes"
     examenes = Examen.objects.filter(creado_por=request.user).order_by('-fecha_inicio')
+
     return render(request, 'academia/profesor/gestion_evaluaciones.html', {'examenes': examenes})
 
 @login_required
@@ -85,3 +84,12 @@ def crear_examen(request):
     
     return render(request, 'academia/profesor/crear_examen.html', {'form': form})
 
+def eliminar_examen(request, examen_id):
+    examen = get_object_or_404(Examen, id=examen_id, creado_por=request.user)
+    examen.delete()
+    return redirect('banda_academia:lista_examenes')
+
+def editar_examen(request, examen_id):
+    examen = get_object_or_404(Examen, id=examen_id, creado_por=request.user)
+    # Aquí es donde cargarás el formulario para añadir preguntas
+    return render(request, 'academia/profesor/editar_examen.html', {'examen': examen})
