@@ -4,6 +4,8 @@ from django.contrib import messages
 from .models import MaterialMultimedia
 from .forms import MaterialMultimediaForm
 from django.contrib.auth import get_user_model
+from .models import Examen
+from .forms import ExamenForm
 
 def es_profesor(user):
     return user.rol == 'profesor'
@@ -56,4 +58,30 @@ def eliminar_material(request, material_id):
     if request.method == 'POST':
         material.delete()
     return redirect('banda_academia:lista_multimedia')
+
+@login_required
+def lista_examenes(request): # <-- Quítale el "_profesor" para que coincida con el urls.py
+    if request.user.rol != 'profesor':
+        return redirect('banda_usuarios:home')
+    
+    # Ojo aquí: tenías "eexamenes" con doble 'e', corrígelo a "examenes"
+    examenes = Examen.objects.filter(creado_por=request.user).order_by('-fecha_inicio')
+    return render(request, 'academia/profesor/gestion_evaluaciones.html', {'examenes': examenes})
+
+@login_required
+def crear_examen(request):
+    if request.user.rol != 'profesor':
+        return redirect('banda_usuarios:home')
+
+    if request.method == 'POST':
+        form = ExamenForm(request.POST)
+        if form.is_valid():
+            examen = form.save(commit=False)
+            examen.creado_por = request.user
+            examen.save()
+            return redirect('banda_academia:lista_examenes')
+    else:
+        form = ExamenForm()
+    
+    return render(request, 'academia/profesor/crear_examen.html', {'form': form})
 
