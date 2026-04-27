@@ -24,7 +24,7 @@ urlpatterns = [
     # Asegúrate de que el nombre de la carpeta de la app sea 'usuarios'
     path('usuarios/', include('banda.usuarios.urls')), 
     
-    path('academia/', include('banda.academia.urls')),
+    path('academia/', include('banda.academia.urls', namespace='banda_academia')),
 ]
 
 # Configuración para que se vean las imágenes de perfil en desarrollo

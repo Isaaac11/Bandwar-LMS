@@ -1,6 +1,6 @@
 # banda/academia/admin.py
 from django.contrib import admin
-from .models import Examen, Pregunta, Opcion, Resultado
+from .models import Examen, Pregunta, Opcion, ResultadoExamen, Instrumento
 
 class OpcionInline(admin.TabularInline):
     model = Opcion
@@ -11,4 +11,5 @@ class PreguntaAdmin(admin.ModelAdmin):
 
 admin.site.register(Examen)
 admin.site.register(Pregunta, PreguntaAdmin)
-admin.site.register(Resultado)
+admin.site.register(ResultadoExamen)
+admin.site.register(Instrumento)

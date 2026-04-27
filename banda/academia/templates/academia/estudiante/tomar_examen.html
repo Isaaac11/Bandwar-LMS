@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-0">{{ examen.titulo }}</h2>
+                    <p class="text-muted">Instructor: {{ examen.creado_por.username }}</p>
+                </div>
+                <div class="badge bg-dark p-2">
+                    <i class="bi bi-clock me-2"></i><span id="timer">--:--</span>
+                </div>
+            </div>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                {% for pregunta in preguntas %}
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold">Pregunta {{ forloop.counter }}</h5>
+                        <p class="fs-5">{{ pregunta.texto }}</p>
+
+                        {% if pregunta.tipo == 'visual' %}
+                        <div class="bg-light rounded p-3 text-center mb-3" style="min-height: 200px; border: 2px dashed #ccc;">
+                            <i class="bi bi-box-seam display-4 text-muted"></i>
+                            <p class="small text-muted">Cargando visualización Three.js...</p>
+                        </div>
+                        {% endif %}
+
+                        <div class="list-group">
+                            {% for opcion in pregunta.opciones.all %}
+                            <label class="list-group-item list-group-item-action d-flex align-items-center">
+                                <input class="form-check-input me-3" type="radio" name="pregunta_{{ pregunta.id }}" value="{{ opcion.id }}" required>
+                                {{ opcion.texto }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="text-end mb-5">
+                    <button type="submit" class="btn btn-success btn-lg px-5 shadow">
+                        Finalizar y Enviar Evaluación <i class="bi bi-send-fill ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

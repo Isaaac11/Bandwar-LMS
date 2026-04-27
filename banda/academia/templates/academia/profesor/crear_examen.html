@@ -1,25 +1,44 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Configurar Nueva Evaluación</h4>
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3><i class="bi bi-journal-plus"></i> Nueva Evaluación</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nombre del Examen</label>
+                    <input type="text" name="titulo" class="form-control" placeholder="Ej: Teoría Musical I" required>
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-success">Guardar y Continuar a Preguntas</button>
-                            <a href="{% url 'banda_academia:lista_examenes' %}" class="btn btn-secondary">Cancelar</a>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-success">Fecha de Apertura</label>
+                        <div class="input-group">
+                            <input type="date" name="fecha_inicio_d" class="form-control" id="f_ini" required>
+                            <input type="time" name="hora_inicio_t" class="form-control" required>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-danger">Fecha de Cierre</label>
+                        <div class="input-group">
+                            <input type="date" name="fecha_fin_d" class="form-control" id="f_fin" required>
+                            <input type="time" name="hora_fin_t" class="form-control" required>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Evaluación</button>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    // Bloqueo de fechas pasadas para evitar errores de lógica
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('f_ini').setAttribute('min', hoy);
+    document.getElementById('f_fin').setAttribute('min', hoy);
+</script>
 {% endblock %}

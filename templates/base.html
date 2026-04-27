@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Bandwar - UNEFA{% endblock %}</title>
-    
+    <link rel="icon" type="image/png" href="{% static 'img/favicon_con_fondo.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -15,7 +15,13 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{% url 'banda_usuarios:home' %}">
-                <i class="bi bi-music-note-beamed me-2"></i>BANDWAR
+                <img src="{% static 'img/logo_unefa.png' %}" 
+                alt="Logo BANDA-UNEFA" 
+                width="35" 
+                height="35" 
+                class="d-inline-block align-top me-2">
+            
+            <span class="fw-bold" style="letter-spacing: 1px;">BANDWAR</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -27,11 +33,15 @@
                     {% if user.is_authenticated %}
                         <a class="nav-link" href="{% url 'banda_usuarios:home' %}">Inicio</a>
                         <a class="nav-link" href="{% url 'banda_academia:lista_multimedia' %}">Biblioteca</a>
-                        
+                        <a class="nav-link" href="{% url 'banda_academia:historia_banda' %}">Historia</a>
                         {% if user.rol == 'profesor' %}
-                        <a class="nav-link text-warning" href="{% url 'banda_academia:lista_examenes' %}">
-                            <i class="bi bi-journal-check"></i> Evaluaciones
-                        </a>
+                            <a class="nav-link" href="{% url 'banda_usuarios:lista_estudiantes' %}">
+                                <i class="bi bi-people"></i> Estudiantes
+                            </a>
+
+                            <a class="nav-link text-warning" href="{% url 'banda_academia:lista_examenes' %}">
+                                <i class="bi bi-journal-check"></i> Evaluaciones
+                            </a>
                         {% endif %}
                         
                         <div class="nav-item dropdown ms-lg-3">
@@ -66,11 +76,13 @@
     <div class="container">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>{% endif %}
-                    {% if message.tags == 'error' or message.tags == 'danger' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm py-2 px-3 mb-2" role="alert" style="font-size: 0.85rem; max-width: 400px;">
+                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-1"></i>{% endif %}
+                    {% if message.tags == 'error' or message.tags == 'danger' %}<i class="bi bi-exclamation-triangle-fill me-1"></i>{% endif %}
+                    {% if message.tags == 'info' %}<i class="bi bi-info-circle-fill me-1"></i>{% endif %}
+                    {% if message.tags == 'warning' %}<i class="bi bi-exclamation-octagon-fill me-1"></i>{% endif %}
                     {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close p-0" style="font-size: 0.7rem;" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
@@ -90,5 +102,24 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cerrar mensajes automáticamente después de 1.5 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert:not(.show)');
+                alerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+                
+                // También cerrar los que ya están visibles
+                var visibleAlerts = document.querySelectorAll('.alert.show');
+                visibleAlerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 1500);
+        });
+    </script>
 </body>
 </html>

@@ -34,6 +34,3 @@ class Usuario(AbstractUser):
         blank=True, 
         related_name='alumnos'
     )
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.username} ({self.rol})"

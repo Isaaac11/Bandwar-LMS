@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body bg-dark text-white rounded">
+            <h2>Revisión: {{ resultado.examen.titulo }}</h2>
+            <p class="mb-0">Nota Final: <strong>{{ resultado.nota }}/20</strong></p>
+        </div>
+    </div>
+
+    {% for r in respuestas %}
+    <div class="card shadow-sm mb-3 border-0">
+        <div class="card-body">
+            <h5>{{ forloop.counter }}. {{ r.pregunta.texto }}</h5>
+            
+            <div class="list-group mt-3">
+                {% for opcion in r.pregunta.opciones.all %}
+                    {% if opcion == r.opcion_seleccionada %}
+                        <div class="list-group-item {% if opcion.es_correcta %}list-group-item-success{% else %}list-group-item-danger{% endif %}">
+                            <i class="bi {% if opcion.es_correcta %}bi-check-circle-fill{% else %}bi-x-circle-fill{% endif %} me-2"></i>
+                            Tu respuesta: {{ opcion.texto }}
+                        </div>
+                    {% elif opcion.es_correcta %}
+                        <div class="list-group-item list-group-item-warning">
+                            <i class="bi bi-info-circle me-2"></i> Respuesta correcta: {{ opcion.texto }}
+                        </div>
+                    {% else %}
+                        <div class="list-group-item text-muted">{{ opcion.texto }}</div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="text-center mt-4 mb-5">
+        <a href="{% url 'banda_academia:lista_examenes' %}" class="btn btn-secondary">Volver a mis evaluaciones</a>
+    </div>
+</div>
+{% endblock %}

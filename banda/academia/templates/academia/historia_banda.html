@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <i class="bi bi-bank display-3 text-secondary mb-3"></i>
+            <h1 class="fw-bold">Historia de la Banda UNEFA</h1>
+            <div class="mx-auto bg-primary" style="height: 4px; width: 80px;"></div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm border-0 mb-4 p-4 bg-light">
+                <p class="lead italic text-center">
+                    "La historia de la banda de la Universidad Nacional Experimental Politécnica de la Fuerza Armada Nacional Bolivariana (UNEFA) está intrínsecamente ligada a la tradición militar y la formación integral de sus estudiantes."
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="text-primary fw-bold"><i class="bi bi-clock-history me-2"></i>Origen y Evolución</h4>
+                            <p>Surgieron como parte del modelo de "Excelencia Educativa Abierta al Pueblo", combinando la formación académica con la disciplina militar desde la transformación del IUPFAN en 1999. No son solo protocolares, sino espacios de desarrollo cultural.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm bg-dark text-white">
+                        <div class="card-body">
+                            <h4 class="text-warning fw-bold"><i class="bi bi-trophy me-2"></i>Hitos Destacados</h4>
+                            <ul class="small list-unstyled">
+                                <li class="mb-2 border-bottom border-secondary pb-1">🏆 Dominio en Competencias Nacionales.</li>
+                                <li class="mb-2 border-bottom border-secondary pb-1">📅 Eje central de aniversarios (26 de abril).</li>
+                                <li>🎵 Interpretación del Himno por el Cnel. Guillermo Parra García.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm border-start border-primary border-4">
+                        <div class="card-body">
+                            <h4 class="fw-bold">Estructura y Formación</h4>
+                            <p>Compuestas por estudiantes de ingeniería, administración y salud. El entrenamiento implica meses de práctica intensiva para perfeccionar la rítmica y la formación, fomentando valores de lealtad y responsabilidad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{% url 'banda_usuarios:home' %}" class="btn btn-outline-dark">
+                    <i class="bi bi-arrow-left me-2"></i>Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

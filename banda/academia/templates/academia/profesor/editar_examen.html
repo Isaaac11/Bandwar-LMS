@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Evaluación - Bandwar{% endblock %}
+
+{% block content %}
+<div class="card shadow border-0">
+    <div class="card-header bg-dark text-white py-3">
+        <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Editar: {{ examen.titulo }}</h4>
+    </div>
+    <div class="card-body p-4">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label class="form-label fw-bold text-secondary">Nombre de la Evaluación</label>
+                <input type="text" name="titulo" value="{{ examen.titulo }}" class="form-control" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label fw-bold text-primary">Fecha y Hora de Inicio</label>
+                    <div class="input-group">
+                        <input type="date" name="fecha_inicio_d" id="f_ap_d" value="{{ examen.fecha_inicio|date:'Y-m-d' }}" class="form-control" required>
+                        <input type="time" name="hora_inicio_t" id="h_ap_t" value="{{ examen.fecha_inicio|date:'H:i' }}" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <label class="form-label fw-bold text-danger">Fecha y Hora de Cierre</label>
+                    <div class="input-group">
+                        <input type="date" name="fecha_fin_d" id="f_ci_d" value="{{ examen.fecha_fin|date:'Y-m-d' }}" class="form-control" required>
+                        <input type="time" name="hora_fin_t" id="h_ci_t" value="{{ examen.fecha_fin|date:'H:i' }}" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">Guardar Cambios</button>
+                <a href="{% url 'banda_academia:lista_examenes' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

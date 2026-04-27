@@ -4,9 +4,14 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3><i class="bi bi-people-fill me-2"></i>Mis Estudiantes Registrados</h3>
-        <a href="{% url 'banda_usuarios:registrar_estudiante' %}" class="btn btn-success">
-            <i class="bi bi-person-plus"></i> Nuevo Registro
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{% url 'banda_academia:gestionar_inventario' %}" class="btn btn-outline-dark">
+                <i class="bi bi-box-seam"></i> Inventario
+            </a>
+            <a href="{% url 'banda_usuarios:registrar_estudiante' %}" class="btn btn-success">
+                <i class="bi bi-person-plus"></i> Nuevo Registro
+            </a>
+        </div>
     </div>
 
     <div class="card shadow-sm border-0">
@@ -15,12 +20,12 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Nombre Completo</th>
-                        <th>Cédula (Usuario)</th>
+                        <th>Cédula</th>
                         <th>Carrera</th>
                         <th>Semestre</th>
-                        <th>Rango</th>
                         <th>Estado Perfil</th>
-                    </tr>
+                        <th>Instrumento</th>
+                        <th class="text-center">Acciones</th> </tr>
                 </thead>
                 <tbody>
                     {% for alumno in alumnos %}
@@ -29,7 +34,6 @@
                         <td><span class="badge bg-secondary">{{ alumno.username }}</span></td>
                         <td>{{ alumno.carrera|default:"-" }}</td>
                         <td>{% if alumno.semestre == 0 %}CINU{% else %}{{ alumno.semestre }}º{% endif %}</td>
-                        <td>{{ alumno.rango_militar }}</td>
                         <td>
                             {% if alumno.perfil_completo %}
                                 <span class="badge bg-success">Completado</span>
@@ -37,10 +41,82 @@
                                 <span class="badge bg-warning text-dark">Pendiente</span>
                             {% endif %}
                         </td>
+                        <td>
+                            {% if alumno.instrumento_propio %}
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info text-dark me-1">Asignado</span>
+                                    <form action="{% url 'banda_academia:asignar_instrumento' alumno.id %}" method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="instrumento_id" value="desasignar">
+                                        <button type="submit" class="btn btn-sm text-danger p-0" title="Quitar">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            {% else %}
+                                <button class="btn btn-sm btn-outline-primary py-0" data-bs-toggle="modal" data-bs-target="#modalAsignar{{ alumno.id }}">
+                                    <i class="bi bi-music-note-beamed"></i> Asignar
+                                </button>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group shadow-sm">
+                                <a href="{% url 'banda_usuarios:editar_estudiante' alumno.id %}" class="btn btn-sm btn-light border" title="Editar">
+                                    <i class="bi bi-pencil-square text-primary"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#confirmarEliminar{{ alumno.id }}" title="Eliminar">
+                                    <i class="bi bi-trash3 text-danger"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
+
+                    <div class="modal fade" id="confirmarEliminar{{ alumno.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-sm modal-dialog-centered">
+                            <div class="modal-content border-0 shadow">
+                                <div class="modal-body text-center p-4">
+                                    <i class="bi bi-exclamation-triangle text-danger display-4 mb-3"></i>
+                                    <h5>¿Eliminar a {{ alumno.first_name }}?</h5>
+                                    <p class="text-muted small">Esta acción no se puede deshacer y liberará cualquier instrumento asignado.</p>
+                                    <div class="d-flex gap-2 justify-content-center mt-4">
+                                        <button type="button" class="btn btn-light border w-50" data-bs-dismiss="modal">No, atrás</button>
+                                        <a href="{% url 'banda_usuarios:eliminar_estudiante' alumno.id %}" class="btn btn-danger w-50">Sí, borrar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="modalAsignar{{ alumno.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header bg-dark text-white py-2">
+                                    <h6 class="modal-title">Asignar a {{ alumno.first_name }}</h6>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{% url 'banda_academia:asignar_instrumento' alumno.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="modal-body">
+                                        <select name="instrumento_id" class="form-select shadow-sm" required>
+                                            <option value="" selected disabled>Seleccione instrumento...</option>
+                                            {% for inst in instrumentos_libres %}
+                                                <option value="{{ inst.id }}">{{ inst.get_nombre_display }} ({{ inst.codigo_interno }})</option>
+                                            {% empty %}
+                                                <option disabled>No hay disponibles</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="p-3 border-top">
+                                        <button type="submit" class="btn btn-primary w-100 shadow-sm">Confirmar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">No has registrado estudiantes todavía.</td>
+                        <td colspan="7" class="text-center py-4 text-muted font-italic">No hay estudiantes registrados.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

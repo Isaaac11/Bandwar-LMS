@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Editar Pregunta</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Enunciado</label>
+                            <textarea name="texto" class="form-control" rows="3" required>{{ pregunta.texto }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select name="tipo" class="form-select">
+                                <option value="multiple" {% if pregunta.tipo == 'multiple' %}selected{% endif %}>Selección Múltiple</option>
+                                <option value="vf" {% if pregunta.tipo == 'vf' %}selected{% endif %}>Verdadero o Falso</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Puntaje</label>
+                            <input type="number" name="puntos" class="form-control" value="{{ pregunta.puntos }}" min="1" max="20">
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'banda_academia:gestionar_preguntas' pregunta.examen.id %}" class="btn btn-light">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
