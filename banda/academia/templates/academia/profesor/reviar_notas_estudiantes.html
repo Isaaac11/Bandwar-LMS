@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow border-0 mb-4">
+        <div class="card-body bg-dark text-white rounded">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1">Resultados: {{ examen.titulo }}</h2>
+                    <p class="mb-0 text-muted">Evaluación creada por ti</p>
+                </div>
+                <div class="text-end">
+                    <a href="{% url 'banda_academia:lista_examenes' %}" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjetas de estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-primary mb-0">{{ total_estudiantes }}</h3>
+                    <small class="text-muted">Total Registros</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-success mb-0">{{ estudiantes_respondieron }}</h3>
+                    <small class="text-muted">Presentaron</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-warning mb-0">{{ estudiantes_no_respondieron }}</h3>
+                    <small class="text-muted">No Participaron</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="text-info mb-0">{% if promedio %}{{ promedio }}/20{% else %}-{% endif %}</h3>
+                    <small class="text-muted">Promedio</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div class="card shadow border-0">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="bi bi-people me-2"></i>Lista de Estudiantes</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Estudiante</th>
+                            <th>Cédula</th>
+                            <th>Fecha de Entrega</th>
+                            <th>Estado</th>
+                            <th>Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for resultado in resultados %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <strong>{{ resultado.estudiante.first_name }} {{ resultado.estudiante.last_name }}</strong>
+                            </td>
+                            <td>{{ resultado.estudiante.username }}</td>
+                            <td>{{ resultado.fecha_completado|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if resultado.no_participo %}
+                                    <span class="badge bg-warning">No participó</span>
+                                {% elif resultado.nota is not None %}
+                                    <span class="badge bg-success">Presentó</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Pendiente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if resultado.nota is not None %}
+                                    <span class="badge {% if resultado.nota >= 10 %}bg-success{% elif resultado.nota >= 7 %}bg-warning{% else %}bg-danger{% endif %} fs-6">
+                                        {{ resultado.nota }}/20
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                No hay estudiantes registrados en este examen.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

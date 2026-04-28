@@ -34,7 +34,7 @@ def lista_multimedia(request):
     return render(request, 'lms/multimedia_list.html', {'materiales': materiales})
 
 @login_required
-@user_passes_test(es_profesor, login_url='banda_usuarios:home')
+@user_passes_test(es_profesor, login_url='usuarios:home')
 def subir_material(request):
     # Seguridad: Solo el profesor puede entrar aquí
     if request.user.rol != 'profesor':
@@ -55,7 +55,7 @@ def subir_material(request):
     return render(request, 'lms/subir_material.html', {'form': form})
 
 @login_required
-@user_passes_test(es_profesor, login_url='banda_usuarios:home')
+@user_passes_test(es_profesor, login_url='usuarios:home')
 def eliminar_material(request, material_id):
     material = get_object_or_404(MaterialMultimedia, id=material_id)
     if request.method == 'POST':
@@ -77,12 +77,14 @@ def lista_examenes(request):
             fecha_fin__gte=ahora
         ).order_by('fecha_fin')
         
-        # También buscamos si el estudiante ya respondió algún examen
-        resultados = ResultadoExamen.objects.filter(estudiante=request.user).values_list('examen_id', flat=True)
+        # Obtenemos los resultados del estudiante (para mostrar notas)
+        resultados = ResultadoExamen.objects.filter(estudiante=request.user)
+        resultados_ids = resultados.values_list('examen_id', flat=True)
         
         return render(request, 'academia/estudiante/lista_examenes.html', {
             'examenes': examenes,
-            'resultados_ids': resultados
+            'resultados_ids': resultados_ids,
+            'resultados': resultados
         })
 
 @login_required
@@ -90,7 +92,7 @@ def crear_examen(request):
     # Seguridad: Solo el profesor puede crear exámenes
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para crear evaluaciones.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     if request.method == 'POST':
         titulo = request.POST.get('titulo')
@@ -118,7 +120,7 @@ def editar_examen(request, examen_id):
     # Seguridad: Solo el profesor puede editar exámenes
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para editar evaluaciones.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     examen = get_object_or_404(Examen, id=examen_id)
     
@@ -148,7 +150,7 @@ def eliminar_examen(request, examen_id):
     # Seguridad: Solo el profesor puede eliminar exámenes
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para eliminar evaluaciones.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     examen = get_object_or_404(Examen, id=examen_id)
     examen.delete()
@@ -160,7 +162,7 @@ def gestionar_preguntas(request, examen_id):
     # Seguridad: Solo el profesor puede gestionar preguntas
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para gestionar preguntas.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     examen = get_object_or_404(Examen, id=examen_id)
     
@@ -199,7 +201,7 @@ def eliminar_pregunta(request, pregunta_id):
     # Seguridad: Solo el profesor puede eliminar preguntas
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para eliminar preguntas.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     pregunta = get_object_or_404(Pregunta, id=pregunta_id)
     examen_id = pregunta.examen.id
@@ -212,7 +214,7 @@ def editar_pregunta(request, pregunta_id):
     # Seguridad: Solo el profesor puede editar preguntas
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para editar preguntas.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     pregunta = get_object_or_404(Pregunta, id=pregunta_id)
     if request.method == 'POST':
@@ -235,7 +237,7 @@ def agregar_opcion(request, pregunta_id):
     # Seguridad: Solo el profesor puede agregar opciones
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para agregar opciones.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     pregunta = get_object_or_404(Pregunta, id=pregunta_id)
     if request.method == 'POST':
@@ -256,7 +258,7 @@ def eliminar_opcion(request, opcion_id):
     # Seguridad: Solo el profesor puede eliminar opciones
     if request.user.rol != 'profesor':
         messages.error(request, "No tienes permiso para eliminar opciones.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     opcion = get_object_or_404(Opcion, id=opcion_id)
     examen_id = opcion.pregunta.examen.id
@@ -269,7 +271,7 @@ def tomar_examen(request, examen_id):
     # Seguridad: Solo los estudiantes pueden tomar exámenes
     if request.user.rol != 'estudiante':
         messages.error(request, "No tienes permiso para tomar evaluaciones.")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     examen = get_object_or_404(Examen, id=examen_id)
     preguntas = examen.preguntas.all()
@@ -337,7 +339,7 @@ def historia_banda(request):
 @login_required
 def gestionar_inventario(request):
     if request.user.rol != 'profesor':
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
 
     if request.method == 'POST':
         # Lógica para registrar un nuevo instrumento
@@ -387,7 +389,7 @@ def asignar_instrumento(request, alumno_id):
             nuevo_inst.estudiante_asignado = alumno
             nuevo_inst.save()
             
-    return redirect('banda_usuarios:lista_estudiantes')
+    return redirect('usuarios:lista_estudiantes')
 
 @login_required
 def cambiar_estado_instrumento(request, inst_id):
@@ -413,4 +415,58 @@ def cambiar_estado_instrumento(request, inst_id):
         messages.success(request, f"El instrumento {instrumento.codigo_interno} ya está operativo.")
     
     instrumento.save()
+    return redirect('banda_academia:gestionar_inventario')
+
+@login_required
+def ver_notas_estudiantes(request, examen_id):
+    """
+    Vista para que el profesor vea las notas de todos los estudiantes
+    que presentaron un examen específico.
+    """
+    # Solo el profesor puede acceder
+    if request.user.rol != 'profesor':
+        messages.error(request, "No tienes permiso para ver las notas de los estudiantes.")
+        return redirect('usuarios:home')
+    
+    # Obtenemos el examen
+    examen = get_object_or_404(Examen, id=examen_id)
+    
+    # Obtenemos todos los resultados de este examen
+    resultados = ResultadoExamen.objects.filter(
+        examen=examen
+    ).select_related('estudiante').order_by('-fecha_completado')
+    
+    # Calculamos estadísticas
+    total_estudiantes = resultados.count()
+    estudiantes_respondieron = resultados.exclude(nota__isnull=True).count()
+    estudiantes_no_respondieron = resultados.filter(no_participo=True).count()
+    
+    # Calcular promedio si hay notas
+    promedio = None
+    if estudiantes_respondieron > 0:
+        suma_notas = sum(float(r.nota or 0) for r in resultados)
+        promedio = round(suma_notas / estudiantes_respondieron, 2)
+    
+    context = {
+        'examen': examen,
+        'resultados': resultados,
+        'total_estudiantes': total_estudiantes,
+        'estudiantes_respondieron': estudiantes_respondieron,
+        'estudiantes_no_respondieron': estudiantes_no_respondieron,
+        'promedio': promedio,
+    }
+    
+    return render(request, 'academia/profesor/reviar_notas_estudiantes.html', context)
+
+
+def eliminar_instrumento(request, instrumento_id):
+    if request.method == 'POST':
+        instrumento = get_object_or_404(Instrumento, id=instrumento_id)
+        nombre_ext = instrumento.get_nombre_display()
+        codigo = instrumento.codigo_interno
+        
+        # Eliminación física
+        instrumento.delete()
+        
+        messages.success(request, f"Se ha eliminado el instrumento: {nombre_ext} ({codigo}) correctamente.")
     return redirect('banda_academia:gestionar_inventario')

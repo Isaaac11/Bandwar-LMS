@@ -19,8 +19,10 @@ urlpatterns = [
     path('opcion/<int:opcion_id>/eliminar/', views.eliminar_opcion, name='eliminar_opcion'),
     path('examen/<int:examen_id>/tomar/', views.tomar_examen, name='tomar_examen'),
     path('examen/<int:examen_id>/revision/', views.revisar_examen, name='revisar_examen'),
+    path('examen/<int:examen_id>/ver-notas/', views.ver_notas_estudiantes, name='ver_notas_estudiantes'),
     path('historia/', views.historia_banda, name='historia_banda'),
     path('asignar-instrumento/<int:alumno_id>/', views.asignar_instrumento, name='asignar_instrumento'),
     path('inventario/', views.gestionar_inventario, name='gestionar_inventario'),
     path('inventario/cambiar-estado/<int:inst_id>/', views.cambiar_estado_instrumento, name='cambiar_estado_instrumento'),
+    path('inventario/eliminar/<int:instrumento_id>/', views.eliminar_instrumento, name='eliminar_instrumento'),
 ]

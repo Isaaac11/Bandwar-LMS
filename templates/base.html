@@ -14,7 +14,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'banda_usuarios:home' %}">
+            <a class="navbar-brand fw-bold" href="{% url 'usuarios:home' %}">
                 <img src="{% static 'img/logo_unefa.png' %}" 
                 alt="Logo BANDA-UNEFA" 
                 width="35" 
@@ -31,11 +31,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'banda_usuarios:home' %}">Inicio</a>
+                        <a class="nav-link" href="{% url 'usuarios:home' %}">Inicio</a>
                         <a class="nav-link" href="{% url 'banda_academia:lista_multimedia' %}">Biblioteca</a>
                         <a class="nav-link" href="{% url 'banda_academia:historia_banda' %}">Historia</a>
                         {% if user.rol == 'profesor' %}
-                            <a class="nav-link" href="{% url 'banda_usuarios:lista_estudiantes' %}">
+                            <a class="nav-link" href="{% url 'usuarios:lista_estudiantes' %}">
                                 <i class="bi bi-people"></i> Estudiantes
                             </a>
 
@@ -50,13 +50,13 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'banda_usuarios:completar_perfil' %}">
+                                    <a class="dropdown-item" href="{% url 'usuarios:completar_perfil' %}">
                                         <i class="bi bi-pencil-square me-2"></i>Mi Perfil
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form action="{% url 'banda_usuarios:logout' %}" method="post" class="px-3">
+                                    <form action="{% url 'usuarios:logout' %}" method="post" class="px-3">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-sm btn-danger w-100 text-start">
                                             <i class="bi bi-box-arrow-right me-2"></i>Salir
@@ -66,7 +66,7 @@
                             </ul>
                         </div>
                     {% else %}
-                        <a class="nav-link" href="{% url 'banda_usuarios:login' %}">Iniciar Sesión</a>
+                        <a class="nav-link" href="{% url 'usuarios:login' %}">Iniciar Sesión</a>
                     {% endif %}
                 </div>
             </div>

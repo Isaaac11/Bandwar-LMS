@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3><i class="bi bi-box-seam me-2"></i>Gestión de Inventario</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo">
+        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNuevo">
             <i class="bi bi-plus-circle me-1"></i> Registrar Instrumento
         </button>
     </div>
@@ -51,8 +51,8 @@
                 <tbody>
                     {% for inst in instrumentos %}
                     <tr>
-                        <td class="ps-4 fw-bold">{{ inst.get_nombre_display }}</td>
-                        <td><code>{{ inst.codigo_interno }}</code></td>
+                        <td class="ps-4"><span class="fw-bold">{{ inst.get_nombre_display }}</span></td>
+                        <td><code class="text-danger">{{ inst.codigo_interno }}</code></td>
                         <td>
                             {% if inst.estado == 'activo' %}
                                 <span class="badge rounded-pill bg-success-subtle text-success border border-success">Activo</span>
@@ -62,33 +62,49 @@
                         </td>
                         <td>
                             {% if inst.estudiante_asignado %}
-                                <i class="bi bi-person-check me-1 text-primary"></i>
-                                {{ inst.estudiante_asignado.first_name }} {{ inst.estudiante_asignado.last_name }}
+                                <div class="text-primary">
+                                    <i class="bi bi-person-check me-1"></i>
+                                    {{ inst.estudiante_asignado.first_name }} {{ inst.estudiante_asignado.last_name }}
+                                </div>
                             {% else %}
                                 <span class="text-muted small italic">En estante</span>
                             {% endif %}
                         </td>
                         <td class="text-end pe-4">
-                            <div class="btn-group">
+                            <div class="btn-group gap-1">
                                 <form action="{% url 'banda_academia:cambiar_estado_instrumento' inst.id %}" method="POST">
                                     {% csrf_token %}
-                                    {% if inst.estado == 'activo' %}
-                                        <button type="submit" class="btn btn-sm btn-outline-warning" title="Mandar a mantenimiento">
-                                            <i class="bi bi-tools"></i>
-                                        </button>
-                                    {% else %}
-                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Activar">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                    {% endif %}
+                                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-wrench"></i>
+                                    </button>
                                 </form>
+                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#del{{ inst.id }}">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">No hay instrumentos registrados en el sistema.</td>
-                    </tr>
+
+                    <div class="modal fade" id="del{{ inst.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-bold text-danger">Confirmar eliminación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Seguro que quieres eliminar la <strong>{{ inst.get_nombre_display }} ({{ inst.codigo_interno }})</strong> de la base de datos?
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">No, cancelar</button>
+                                    <form action="{% url 'banda_academia:eliminar_instrumento' inst.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </tbody>
             </table>
@@ -97,30 +113,34 @@
 </div>
 
 <div class="modal fade" id="modalNuevo" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog shadow-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Añadir al Inventario</h5>
+                <h5 class="modal-title fw-bold">Añadir al Inventario</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Tipo de Instrumento</label>
+                        <label class="form-label fw-semibold">Tipo de Instrumento</label>
                         <select name="nombre" class="form-select" required>
-                            {% for key, label in tipos %}
-                                <option value="{{ key }}">{{ label }}</option>
-                            {% endfor %}
+                            <option value="trompeta">Trompeta</option>
+                            <option value="redoblante">Redoblante</option>
+                            <option value="bombo">Bombo</option>
+                            <option value="lira">Lira</option>
+                            <option value="granaderos">Granaderos</option>
+                            <option value="tambormayor">Tambor Mayor</option>
+                            <option value="platillos">Platillos</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Código Interno / Serial</label>
+                        <label class="form-label fw-semibold">Código Interno / Serial</label>
                         <input type="text" name="codigo_interno" class="form-control" placeholder="Ej: TROM-001" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary w-100">Guardar en Base de Datos</button>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Guardar en Base de Datos</button>
                 </div>
             </form>
         </div>

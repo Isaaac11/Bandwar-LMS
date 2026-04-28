@@ -8,7 +8,7 @@ from django.utils import timezone
 
 class MaterialMultimedia(models.Model):
     TIPO_CHOICES = [
-        ('pdf', 'Partitura / PDF'),
+        ('pdf', 'imagen / PDF'),
         ('video', 'Video de Práctica'),
         ('link', 'Enlace Externo (YouTube/Drive)'),
     ]
@@ -104,7 +104,15 @@ class RespuestaEstudiante(models.Model):
 #INSTRUMENTOS 
 
 class Instrumento(models.Model):
-    TIPOS = [('trompeta', 'Trompeta'), ('bombo', 'Bombo'), ('redoblante', 'Redoblante'), ('lira', 'Lira')]
+    TIPOS = [
+        ('trompeta', 'Trompeta'),
+        ('redoblante', 'Redoblante'),
+        ('bombo', 'Bombo'),
+        ('lira', 'Lira'),
+        ('granaderos', 'Granaderos'), 
+        ('tambormayor', 'Tambor Mayor'), 
+        ('platillos', 'Platillos'), 
+    ]
     ESTADOS = [
         ('activo', 'Activo'),
         ('mantenimiento', 'En Mantenimiento'),

@@ -62,7 +62,12 @@
                             <option value="Miliciano" {% if user.rango_militar == "Miliciano" %}selected{% endif %}>Miliciano</option>
                             <option value="Distinguido" {% if user.rango_militar == "Distinguido" %}selected{% endif %}>Distinguido</option>
                             <option value="Sargento" {% if user.rango_militar == "Sargento" %}selected{% endif %}>Sargento</option>
-                            </select>
+                            <option value="Teniente" {% if user.rango_militar == "Teniente" %}selected{% endif %}>Teniente</option>
+                            <option value="Capitán" {% if user.rango_militar == "Capitán" %}selected{% endif %}>Capitán</option>
+                            <option value="Mayor" {% if user.rango_militar == "Mayor" %}selected{% endif %}>Mayor</option>
+                            <option value="Teniente Coronel" {% if user.rango_militar == "Teniente Coronel" %}selected{% endif %}>Teniente Coronel</option>
+                            <option value="Coronel" {% if user.rango_militar == "Coronel" %}selected{% endif %}>Coronel</option>
+                        </select>
                     </div>
 
                     <h6 class="text-danger border-bottom pb-2 mb-3 mt-4">Seguridad</h6>
@@ -73,7 +78,7 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">Guardar Cambios</button>
-                        <a href="{% url 'banda_usuarios:home' %}" class="btn btn-light border">Cancelar</a>
+                        <a href="{% url 'usuarios:home' %}" class="btn btn-light border">Cancelar</a>
                     </div>
                 </form>
             </div>

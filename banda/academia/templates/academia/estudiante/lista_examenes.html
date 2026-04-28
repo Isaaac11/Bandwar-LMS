@@ -15,9 +15,21 @@
                     </p>
                     
                     {% if examen.id in resultados_ids %}
-                        <div class="alert alert-secondary py-2 mb-0">
+                        <div class="alert alert-secondary py-2 mb-2">
                             <i class="bi bi-check-all"></i> Ya completado
                         </div>
+                        {% for resultado in resultados %}
+                            {% if resultado.examen_id == examen.id %}
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'banda_academia:revisar_examen' examen.id %}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                        <i class="bi bi-eye"></i> Ver Respuestas
+                                    </a>
+                                    <span class="btn btn-sm {% if resultado.nota >= 10 %}btn-success{% elif resultado.nota >= 7 %}btn-warning{% else %}btn-danger{% endif %}">
+                                        {{ resultado.nota }}/20
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     {% else %}
                         <a href="{% url 'banda_academia:tomar_examen' examen.id %}" class="btn btn-primary w-100">
                             Comenzar Evaluación

@@ -8,7 +8,7 @@
             <a href="{% url 'banda_academia:gestionar_inventario' %}" class="btn btn-outline-dark">
                 <i class="bi bi-box-seam"></i> Inventario
             </a>
-            <a href="{% url 'banda_usuarios:registrar_estudiante' %}" class="btn btn-success">
+            <a href="{% url 'usuarios:registrar_estudiante' %}" class="btn btn-success">
                 <i class="bi bi-person-plus"></i> Nuevo Registro
             </a>
         </div>
@@ -61,7 +61,7 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group shadow-sm">
-                                <a href="{% url 'banda_usuarios:editar_estudiante' alumno.id %}" class="btn btn-sm btn-light border" title="Editar">
+                                <a href="{% url 'usuarios:editar_estudiante' alumno.id %}" class="btn btn-sm btn-light border" title="Editar">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <button type="button" class="btn btn-sm btn-light border" data-bs-toggle="modal" data-bs-target="#confirmarEliminar{{ alumno.id }}" title="Eliminar">
@@ -80,7 +80,7 @@
                                     <p class="text-muted small">Esta acción no se puede deshacer y liberará cualquier instrumento asignado.</p>
                                     <div class="d-flex gap-2 justify-content-center mt-4">
                                         <button type="button" class="btn btn-light border w-50" data-bs-dismiss="modal">No, atrás</button>
-                                        <a href="{% url 'banda_usuarios:eliminar_estudiante' alumno.id %}" class="btn btn-danger w-50">Sí, borrar</a>
+                                        <a href="{% url 'usuarios:eliminar_estudiante' alumno.id %}" class="btn btn-danger w-50">Sí, borrar</a>
                                     </div>
                                 </div>
                             </div>

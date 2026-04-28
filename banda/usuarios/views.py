@@ -12,7 +12,7 @@ User = get_user_model()
 def login_view(request):
     # Si el usuario ya está logueado, lo mandamos al home
     if request.user.is_authenticated:
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
 
     if request.method == 'POST':
         # 'username' y 'password' vienen del 'name' de tus <input> en el HTML
@@ -29,7 +29,7 @@ def login_view(request):
             else:
                 messages.success(request, f"¡Hola {user.first_name}! Bienvenido a Bandwar.")
             
-            return redirect('banda_usuarios:home')
+            return redirect('usuarios:home')
         else:
             messages.error(request, "Cédula o contraseña incorrecta. Inténtalo de nuevo.")
 
@@ -38,7 +38,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "Has cerrado sesión correctamente.")
-    return redirect('banda_usuarios:login')
+    return redirect('usuarios:login')
 
 
 @login_required
@@ -137,7 +137,7 @@ def completar_perfil(request):
         user.save()
         
         messages.success(request, "¡Perfil actualizado con éxito!")
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
         
     return render(request, 'usuarios/completar_perfil.html')
 
@@ -145,7 +145,7 @@ def completar_perfil(request):
 def registrar_estudiante(request):
     # Seguridad: solo profesores pueden registrar
     if request.user.rol != 'profesor':
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     if request.method == 'POST':
         # Obtenemos los datos del formulario
@@ -171,14 +171,14 @@ def registrar_estudiante(request):
             )
             
             messages.success(request, f"Estudiante {nombre} registrado. Usuario y clave: {cedula}")
-            return redirect('banda_usuarios:lista_estudiantes')
+            return redirect('usuarios:lista_estudiantes')
 
     return render(request, 'usuarios/registrar_estudiante.html')
 
 @login_required
 def lista_estudiantes(request):
     if request.user.rol != 'profesor':
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
     
     # Obtenemos los alumnos creados por este profesor
     mis_alumnos = Usuario.objects.filter(creado_por=request.user)
@@ -205,7 +205,7 @@ def editar_estudiante(request, alumno_id):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {alumno.first_name} actualizados.")
-            return redirect('banda_usuarios:lista_estudiantes')
+            return redirect('usuarios:lista_estudiantes')
     else:
         form = RegistroEstudianteForm(instance=alumno)
     
@@ -218,13 +218,13 @@ def editar_estudiante(request, alumno_id):
 @login_required
 def eliminar_estudiante(request, alumno_id):
     if request.user.rol != 'profesor':
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
         
     alumno = get_object_or_404(Usuario, id=alumno_id)
     nombre = alumno.get_full_name()
     alumno.delete()
     messages.warning(request, f"El estudiante {nombre} ha sido eliminado del sistema.")
-    return redirect('banda_usuarios:lista_estudiantes')
+    return redirect('usuarios:lista_estudiantes')
 
 
 #INSTRUMENTOS 
@@ -233,7 +233,7 @@ def eliminar_estudiante(request, alumno_id):
 @login_required
 def asignar_instrumento(request, alumno_id):
     if request.user.rol != 'profesor':
-        return redirect('banda_usuarios:home')
+        return redirect('usuarios:home')
         
     alumno = get_object_or_404(User, id=alumno_id)
     
@@ -252,4 +252,4 @@ def asignar_instrumento(request, alumno_id):
         else:
             messages.info(request, "Instrumento liberado.")
             
-    return redirect('banda_usuarios:lista_estudiantes')
+    return redirect('usuarios:lista_estudiantes')

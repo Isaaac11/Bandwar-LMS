@@ -136,7 +136,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # CORRECCIÓN VITAL: Ambos van al 'home', y el 'home' decide qué dashboard mostrar
-LOGIN_REDIRECT_URL = 'banda_usuarios:home' 
-LOGIN_URL = 'banda_usuarios:login'
-LOGOUT_REDIRECT_URL = 'banda_usuarios:login'
+LOGIN_REDIRECT_URL = 'usuarios:home' 
+LOGIN_URL = 'usuarios:login'
+LOGOUT_REDIRECT_URL = 'usuarios:login'
 

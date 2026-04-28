@@ -3,7 +3,7 @@ from . import views
 from .views import login_view, registrar_estudiante
 
 
-app_name = 'banda_usuarios' 
+app_name = 'usuarios' 
 
 urlpatterns = [
     # Autenticación y perfil común

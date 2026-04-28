@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Asegúrate de que el nombre de la carpeta de la app sea 'usuarios'
-    path('usuarios/', include('banda.usuarios.urls')), 
+    path('usuarios/', include('banda.usuarios.urls', namespace='usuarios')), 
     
     path('academia/', include('banda.academia.urls', namespace='banda_academia')),
 ]

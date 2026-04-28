@@ -34,3 +34,8 @@ class Usuario(AbstractUser):
         blank=True, 
         related_name='alumnos'
     )
+
+    class Meta:
+        db_table = 'banda_usuarios_usuario'  # Tabla actual - protege de migraciones destructivas
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
